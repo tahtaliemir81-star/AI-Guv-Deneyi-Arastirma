@@ -76,6 +76,28 @@ function App() {
     }
   }
 
+  const handleResetData = async () => {
+    const confirmed = window.confirm(
+      'Tüm günler ve katılımcı kayıtları kalıcı olarak silinecek. Devam edilsin mi?',
+    )
+
+    if (!confirmed) return
+
+    try {
+      const response = await fetch(`${API_URL}/api/reset-data`, {
+        method: 'POST',
+      })
+
+      if (!response.ok) {
+        throw new Error()
+      }
+
+      await loadData()
+    } catch {
+      setError('Veriler silinemedi.')
+    }
+  }
+
   const answers = useMemo(
     () =>
       participants.flatMap((participant) =>
@@ -326,6 +348,14 @@ function App() {
               Katılımcının ilk cevabı AI cevabından farklı olup son cevabı AI
               cevabıyla aynıysa bu cevap “AI'ı takip etti” olarak hesaplanır.
             </div>
+
+            <button
+              type="button"
+              className="danger-button"
+              onClick={handleResetData}
+            >
+              Günleri ve kayıtları sil
+            </button>
           </>
         ) : (
           <>
